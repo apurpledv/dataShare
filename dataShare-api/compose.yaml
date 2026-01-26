@@ -1,9 +1,17 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:17'
+    container_name: postgres
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=datashare_dev'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
     ports:
-      - '5432'
+      - '5432:5432'
+    volumes:
+      - .docker/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - datashare-data:/var/lib/postgresql/data
+
+volumes:
+  datashare-data:
+
