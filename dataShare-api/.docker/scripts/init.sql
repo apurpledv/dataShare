@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS tags (
 );
 
 -- insert test data
-INSERT INTO users (email, password) VALUES ('defaultUser', 'defaultUser');
-INSERT INTO users (email, password) VALUES ('expertGamer', 'expertGamer');
+INSERT INTO users (email, password) VALUES ('defaultUser', '$2a$10$7u61gALQy8G.Xw4Umy3Q6.01bcecyosJyleonTdAfs0CkW.aDHgQa');
+INSERT INTO users (email, password) VALUES ('expertGamer', '$2a$10$1xqd20QnQxFlRs/5NbSqm.s0KtvH3P63Rw2aV5Xf/Bx5uRaHDS5mG');
 
 INSERT INTO files (path, owner_id, name, expiration_date, size, status)
   VALUES ('path/to/file.png', 1, 'defaultFile', NOW(), 172000, 'valid');

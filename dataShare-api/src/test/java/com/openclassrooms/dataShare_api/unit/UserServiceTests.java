@@ -1,10 +1,12 @@
 package com.openclassrooms.dataShare_api.unit;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.openclassrooms.dataShare_api.model.User;
 import com.openclassrooms.dataShare_api.repository.UserRepository;
@@ -27,6 +30,9 @@ import jakarta.persistence.EntityExistsException;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
+    @Mock
+    PasswordEncoder passwordEncoder;
+
     @Mock
     UserRepository userRepository;
 
@@ -43,9 +49,16 @@ public class UserServiceTests {
 
     @Test
     public void testUserService_Create() {
+        User mockReturnUser = mockUser;
+        mockReturnUser.setPassword("notTestUser");
+
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(userRepository.save(any(User.class))).thenReturn(mockUser);
-        assertTrue(userService.addUser(mockUser) instanceof User);
+        when(userRepository.save(eq(mockUser))).thenReturn(mockReturnUser);
+        when(passwordEncoder.encode(anyString())).thenReturn(mockReturnUser.getPassword());
+        
+        User user = userService.register(mockUser);
+        assertTrue(user instanceof User);
+        assertNotEquals("testUser", user.getPassword());
     }
 
     @Test
@@ -74,20 +87,20 @@ public class UserServiceTests {
         // null, null
         mockUser = new User("", "");
         assertThrows(IllegalArgumentException.class, () -> { 
-            userService.addUser(mockUser);
+            userService.register(mockUser);
         });
 
         // email, null
         mockUser.setEmail("notNull");
         assertThrows(IllegalArgumentException.class, () -> { 
-            userService.addUser(mockUser); 
+            userService.register(mockUser); 
         });
 
         // email, password BUT already exists
         mockUser.setPassword("notNull");
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(mockUser));
         assertThrows(EntityExistsException.class, () -> { 
-            userService.addUser(mockUser); 
+            userService.register(mockUser); 
         });
     }
 
