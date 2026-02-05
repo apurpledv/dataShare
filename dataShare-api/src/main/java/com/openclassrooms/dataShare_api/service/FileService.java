@@ -94,6 +94,14 @@ public class FileService {
                 ));
             } else {
                 expiredFiles.add(file);
+                try {
+                    Files.deleteIfExists(rootLocation
+                        .resolve(String.valueOf(file.getOwnerId()))
+                        .resolve(file.getPath()).normalize()
+                    );
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not delete file.");
+                }
             }
         }
 
