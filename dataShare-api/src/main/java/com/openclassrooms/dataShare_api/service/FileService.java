@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
@@ -80,7 +82,11 @@ public class FileService {
         }
     }
 
-    public List<DSFileDTO> getFiles(Long userId) {
+    public List<DSFile> getFiles(Long userId) {
+        return fileRepository.findAllByOwnerId(userId);
+    }
+
+    public List<DSFileDTO> getFilesDTO(Long userId) {
         List<DSFileDTO> validFiles = new ArrayList<>();
         List<DSFile> expiredFiles = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
@@ -93,15 +99,8 @@ public class FileService {
                     file.getType(), file.getSize()
                 ));
             } else {
+                deleteFile(file.getId());
                 expiredFiles.add(file);
-                try {
-                    Files.deleteIfExists(rootLocation
-                        .resolve(String.valueOf(file.getOwnerId()))
-                        .resolve(file.getPath()).normalize()
-                    );
-                } catch (IOException e) {
-                    throw new RuntimeException("Could not delete file.");
-                }
             }
         }
 
@@ -110,5 +109,22 @@ public class FileService {
 
         //Return valid files
         return validFiles;
+    }
+
+    public void deleteFile(Long fileId) throws NoSuchElementException, RuntimeException {
+        Optional<DSFile> fileFound = fileRepository.findById(fileId);
+        if (fileFound.isEmpty())
+            throw new NoSuchElementException("User not found.");
+        
+        DSFile file = fileFound.get();
+        try {
+            Files.deleteIfExists(rootLocation
+                .resolve(String.valueOf(file.getOwnerId()))
+                .resolve(file.getPath()).normalize()
+            );
+            fileRepository.delete(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not delete file.");
+        }
     }
 }

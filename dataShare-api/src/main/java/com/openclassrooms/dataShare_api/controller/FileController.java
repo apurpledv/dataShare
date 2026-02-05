@@ -2,12 +2,15 @@ package com.openclassrooms.dataShare_api.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,11 +66,29 @@ public class FileController {
     @GetMapping("/list/{userId}")
     public ResponseEntity<List<DSFileDTO>> listFiles(@PathVariable Long userId) {
         try {
-            List<DSFileDTO> filesList = fileService.getFiles(userId);
+            List<DSFileDTO> filesList = fileService.getFilesDTO(userId);
             log.info("[GET] /api/file/list/" + userId + " [" + HttpStatus.OK +"]");
             return ResponseEntity.ok(filesList);
         } catch (Exception e) {
             log.error("[GET] /api/file/list/" + userId + " [" + HttpStatus.INTERNAL_SERVER_ERROR +"] " + e.toString());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{fileId}")
+    public ResponseEntity<HttpStatusCode> deleteFile(@PathVariable Long fileId) {
+        try {
+            fileService.deleteFile(fileId);
+            log.info("[DELETE] /api/file/" + fileId + " (" + HttpStatus.OK + ")");
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            log.error("[DELETE] /api/file/" + fileId + " (" + HttpStatus.NOT_FOUND + "): " + e.toString());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            log.error("[DELETE] /api/file/" + fileId + " (" + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e.toString());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            log.error("[DELETE] /api/file/" + fileId + " (" + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e.toString());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

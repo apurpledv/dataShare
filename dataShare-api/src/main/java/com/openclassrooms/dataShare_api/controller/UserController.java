@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.dataShare_api.dto.LoginDTO;
 import com.openclassrooms.dataShare_api.dto.TokenDTO;
+import com.openclassrooms.dataShare_api.model.DSFile;
 import com.openclassrooms.dataShare_api.model.User;
+import com.openclassrooms.dataShare_api.service.FileService;
 import com.openclassrooms.dataShare_api.service.UserService;
 
 import jakarta.persistence.EntityExistsException;
@@ -32,6 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    FileService fileService;
 
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
@@ -63,12 +68,21 @@ public class UserController {
     @DeleteMapping("/user/{id}")
     public ResponseEntity<HttpStatusCode> deleteUser(@PathVariable Long id) {
         try {
+            //To delete the User, we have to first delete his files
+            for (DSFile file : fileService.getFiles(id))
+                fileService.deleteFile(file.getId());
+
+            //If all his files are purged, then delete him
             userService.deleteUser(id);
+
             log.info("[DELETE] /api/user (" + HttpStatus.OK + ")");
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             log.error("[DELETE] /api/user (" + HttpStatus.NOT_FOUND + "): " + e.toString());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            log.error("[DELETE] /api/user (" + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e.toString());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             log.error("[DELETE] /api/user (" + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e.toString());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
