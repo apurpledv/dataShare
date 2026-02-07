@@ -1,4 +1,4 @@
-package com.openclassrooms.dataShare_api.config;
+package com.openclassrooms.dataShare_api.config.file;
 
 import java.nio.file.Path;
 

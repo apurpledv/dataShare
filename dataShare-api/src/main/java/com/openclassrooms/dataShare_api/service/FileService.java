@@ -3,7 +3,6 @@ package com.openclassrooms.dataShare_api.service;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,25 +12,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.openclassrooms.dataShare_api.config.StorageProperties;
+import com.openclassrooms.dataShare_api.config.file.LocalFileStorage;
+import com.openclassrooms.dataShare_api.config.file.StorageProperties;
 import com.openclassrooms.dataShare_api.dto.DSFileDTO;
 import com.openclassrooms.dataShare_api.model.DSFile;
 import com.openclassrooms.dataShare_api.repository.FileRepository;
 
 @Service
 public class FileService {
-    @Autowired
-    FileRepository fileRepository;
-
+    private final LocalFileStorage fileStorage;
+    private final FileRepository fileRepository;
     private final Path rootLocation;
 
-    public FileService(StorageProperties properties) {
+    public FileService(LocalFileStorage fileStorage, FileRepository fileRepository, StorageProperties properties) {
+        this.fileStorage = fileStorage;
+        this.fileRepository = fileRepository;
         this.rootLocation = properties.getLocation();
     }
 
@@ -45,10 +44,10 @@ public class FileService {
 
         try {
             //Upload file
-            Files.createDirectories(userDir);
+            fileStorage.createDirectories(userDir);
             Path destinationFile = userDir.resolve(filename).normalize();
 
-            Files.copy(file.getInputStream(), destinationFile);
+            fileStorage.copy(file.getInputStream(), destinationFile);
 
             //Extract metadata and store it
             File uploadedFile = destinationFile.toFile();
@@ -71,7 +70,7 @@ public class FileService {
     public Resource loadAsResource(Long userId, String filename) throws RuntimeException {
         try {
             Path file = rootLocation.resolve(String.valueOf(userId)).resolve(filename);
-            Resource resource = new UrlResource(file.toUri());
+            Resource resource = fileStorage.load(file);
 
             if (resource.exists() && resource.isReadable()) {
                 return resource;
@@ -118,7 +117,7 @@ public class FileService {
         
         DSFile file = fileFound.get();
         try {
-            Files.deleteIfExists(rootLocation
+            fileStorage.deleteIfExists(rootLocation
                 .resolve(String.valueOf(file.getOwnerId()))
                 .resolve(file.getPath()).normalize()
             );

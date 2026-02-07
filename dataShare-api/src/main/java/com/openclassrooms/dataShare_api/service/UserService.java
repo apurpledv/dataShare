@@ -65,7 +65,7 @@ public class UserService {
         Optional<User> userFound = userRepository.findByEmail(loginDto.getEmail());
         if (userFound.isEmpty())
             throw new NoSuchElementException("Account doesn't exist.");
-
+        
         if (passwordEncoder.matches(loginDto.getPassword(), userFound.get().getPassword())) {
             UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(loginDto.getEmail())

@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import com.openclassrooms.dataShare_api.config.StorageProperties;
+import com.openclassrooms.dataShare_api.config.file.StorageProperties;
 
 @EnableConfigurationProperties(StorageProperties.class)
 @SpringBootApplication

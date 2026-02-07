@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,6 @@ import org.testcontainers.utility.DockerImageName;
 import com.openclassrooms.dataShare_api.model.User;
 import com.openclassrooms.dataShare_api.repository.UserRepository;
 
-@Disabled
 @SpringBootTest
 class UserRepositoryTests {
 	@Autowired
