@@ -39,6 +39,6 @@ public class DSFile {
             uploadDate = LocalDateTime.now();
 
         if (expirationDate == null)
-            expirationDate = uploadDate.plusMinutes(1);
+            expirationDate = uploadDate.plusMinutes(10);
     }
 }

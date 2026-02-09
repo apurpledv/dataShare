@@ -1,0 +1,23 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <h2>Créer un compte</h2>
+
+    <div class="formSection">
+        <label>Adresse mail*</label>
+        <input name="email" type="text" placeholder="Saisissez votre email..." formControlName="email" aria-label="email" />
+    </div>
+
+    <div class="formSection">
+        <label>Mot de passe*</label>
+        <input name="password" type="password" placeholder="Saisissez votre mot de passe..." formControlName="password" aria-label="password" />
+    </div>
+
+    <div class="formSection">
+        <label>Vérification du mot de passe*</label>
+        <input name="passwordConfirm" type="password" placeholder="Saisissez-le à nouveau..." formControlName="passwordConfirm" aria-label="passwordConfirm" />
+    </div>
+
+    <p>* Champs requis</p>
+
+    <p><a routerLink="../login">J'ai déjà un compte</a></p>
+    <input name="submit" type="submit" value="Créer mon compte" />
+</form>

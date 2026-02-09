@@ -1,0 +1,16 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <h2>Connexion</h2>
+
+    <div class="formSection">
+        <label>Email</label>
+        <input name="email" type="text" placeholder="Saisissez votre email..." formControlName="email" aria-label="email" />
+    </div>
+
+    <div class="formSection">
+        <label>Mot de passe</label>
+        <input name="password" type="password" placeholder="Saisissez votre mot de passe..." formControlName="password" aria-label="password" />
+    </div>
+
+    <p>Pas de compte ? <a routerLink="../register">Créer un compte</a></p>
+    <input name="submit" type="submit" value="Connexion" />
+</form>
