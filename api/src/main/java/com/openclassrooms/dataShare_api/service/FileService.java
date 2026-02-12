@@ -34,7 +34,7 @@ public class FileService {
         this.rootLocation = properties.getLocation();
     }
 
-    public String store(MultipartFile file, String userId) throws RuntimeException {
+    public String store(MultipartFile file, String userId, Long expirationDays) throws RuntimeException {
         if (file.isEmpty()) {
             throw new RuntimeException("Cannot store empty file");
         }
@@ -58,6 +58,9 @@ public class FileService {
                 dsFile.setName(file.getOriginalFilename());
                 dsFile.setSize(file.getSize());
                 dsFile.setType(FilenameUtils.getExtension(file.getOriginalFilename()));
+            
+            if (expirationDays != null)
+                dsFile.setExpirationDate(LocalDateTime.now().plusDays(expirationDays));
 
             fileRepository.save(dsFile);
 
@@ -98,7 +101,7 @@ public class FileService {
                     file.getType(), file.getSize()
                 ));
             } else {
-                deleteFile(file.getId());
+                deleteFile(file);
                 expiredFiles.add(file);
             }
         }
@@ -110,12 +113,29 @@ public class FileService {
         return validFiles;
     }
 
+    public DSFileDTO getFileDTO(Long fileId) throws NoSuchElementException {
+        Optional<DSFile> file = fileRepository.findById(fileId);
+        if (file.isEmpty())
+            throw new NoSuchElementException();
+
+        DSFile fileFound = file.get();
+        
+        return new DSFileDTO(
+            fileFound.getId(), fileFound.getPath(), fileFound.getOwnerId(), fileFound.getName(), 
+            fileFound.getUploadDate(), fileFound.getExpirationDate(), 
+            fileFound.getType(), fileFound.getSize()
+        );
+    }
+
     public void deleteFile(Long fileId) throws NoSuchElementException, RuntimeException {
         Optional<DSFile> fileFound = fileRepository.findById(fileId);
         if (fileFound.isEmpty())
             throw new NoSuchElementException("User not found.");
         
-        DSFile file = fileFound.get();
+        deleteFile(fileFound.get());
+    }
+
+    private void deleteFile(DSFile file) throws RuntimeException {
         try {
             fileStorage.deleteIfExists(rootLocation
                 .resolve(String.valueOf(file.getOwnerId()))

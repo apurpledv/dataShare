@@ -1,16 +1,18 @@
-<p>dashboard works!</p>
-<div class="fileListWrapper">
-    @for (file of filesList; track file.id) {
-        <div class="fileListItem">
-            <img src=""/>
-            <div class="fileListItemInfo">
-                <p>{{file.name}}</p>
-                <p>{{file.expirationLabel}}</p>
+<article class="mainElement fileListing">
+    <h2>Mes fichiers</h2>
+    <div class="fileListWrapper">
+        <p><a id="addFileBtn" routerLink="../upload">Ajouter des fichiers</a></p>
+        @for (file of filesList; track file.id) {
+            <div class="fileListItem">
+                <div class="fileListItemInfo">
+                    <p>{{file.name}}</p>
+                    <p>{{file.expirationLabel}}</p>
+                </div>
+                <div class="fileListItemControls">
+                    <button (click)="onDelete(file.id)"><img src="img/bin.png" width="12" alt="deleteFileLogo"/> Supprimer</button>
+                    <button (click)="onViewFile(file.id)">Accéder <img src="img/right-arrow.png" width="12" alt="viewFileLogo"/></button>
+                </div>
             </div>
-            <div class="fileListItemControls">
-                <button (click)="onDelete(file.id)"><img src="img/bin.png" width="12" alt="deleteFileLogo"/>Supprimer</button>
-                <button (click)="onDownload(file.name, file.path)">Accéder<img src="img/right-arrow.png" width="12" alt="viewFileLogo"/></button>
-            </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+</article>

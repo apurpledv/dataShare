@@ -52,7 +52,7 @@ public class FileControllerTests {
     public void testFileController_Upload() throws Exception {
         MockMultipartFile mockFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some text".getBytes());
 
-        when(fileService.store(any(MultipartFile.class), anyString())).thenReturn("fileName");
+        when(fileService.store(any(MultipartFile.class), anyString(), anyLong())).thenReturn("fileName");
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/file/upload")
                 .file("file", mockFile.getBytes())
@@ -67,7 +67,7 @@ public class FileControllerTests {
         MockMultipartFile mockFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some text".getBytes());
 
         // RuntimeException
-        when(fileService.store(any(MultipartFile.class), anyString())).thenThrow(new RuntimeException());
+        when(fileService.store(any(MultipartFile.class), anyString(), anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/file/upload")
                 .file("file", mockFile.getBytes())

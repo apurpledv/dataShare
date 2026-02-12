@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   loginForm!: FormGroup;
   submitted: boolean = false;
+  loginError: boolean = false;
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -46,10 +47,23 @@ export class LoginComponent implements OnInit {
 
     this.userService.login(loginUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(res => {
-        sessionStorage.setItem('auth_token', res.token);
-        this.router.navigateByUrl('dashboard');
-      });
+      .subscribe({
+          next: (res) => {
+            sessionStorage.setItem('auth_token', res.token);
+            sessionStorage.setItem('user_id', res.userId);
+            var btn = document.getElementById('logoutBtn');
+            if (btn != null) {
+              btn.innerText = "Déconnexion";
+            }
+          },
+          error: (err: any) => {
+            this.loginError = true;
+            console.error(err);
+          },
+          complete: () => {
+            this.router.navigateByUrl('dashboard');
+          }
+        });
   }
 
   onReset(): void {

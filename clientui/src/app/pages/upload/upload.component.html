@@ -1,0 +1,35 @@
+<form class="mainElement" [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+    <p><a class="returnBtn" routerLink="../dashboard">Retour</a></p>
+
+    <h2>Ajouter un fichier</h2>
+
+    <div class="formSection">
+        <label class="fileInputWrapper" for="fileInput">Votre fichier*</label>
+        <input id="fileInput" name="file" type="file" (change)="onFileSelected($event)" aria-label="file" 
+        accept="image/png, image/jpeg, image/gif, image/webp, application/pdf, application/vnd.ms-excel, .csv"
+        />
+        <p>(Taille maximum : 1 Go)</p>
+    </div>
+
+    <!--<div class="formSection">
+        <label>Mot de passe</label>
+        <input name="password" type="password" placeholder="Saisissez votre mot de passe..." formControlName="password" aria-label="password" />
+    </div>-->
+
+    <div class="formSection formSectionBig">
+        <label>Expiration*</label>
+        <select name="expirationDate" formControlName="expirationDate" [value]="7">
+            <option [value]="1">Une journée</option>
+            <option [value]="2">2 jours</option>
+            <option [value]="3">3 jours</option>
+            <option [value]="4">4 jours</option>
+            <option [value]="5">5 jours</option>
+            <option [value]="6">6 jours</option>
+            <option [value]="7">1 semaine</option>
+        </select>
+    </div>
+
+    <p>* Champs requis</p>
+
+    <input name="submit" type="submit" value="Téléverser" />
+</form>

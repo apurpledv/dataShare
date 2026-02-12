@@ -1,1 +1,278 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: "ChocolatesL";
+    src: url("assets/TT\ Chocolates\ Trial\ Light.otf");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    font-family: "ChocolatesL";
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    background: #ff3849;
+    background: linear-gradient(0deg,rgb(255, 123, 100) 0%, rgba(255, 166, 128, 1) 100%);
+}
+
+header {
+    width: 100%;
+    margin: auto;
+    padding: 10px 40px 10px 40px;
+    display: inline-flex;
+    justify-content: space-between;
+}
+
+header a {
+    padding: 8px 16px 8px 16px;
+    border-radius: 5px;
+    color: linen;
+    background-color: rgb(43, 43, 43);
+}
+
+header a:hover {
+    color: rgb(43, 43, 43);
+    border: 1px solid rgb(43, 43, 43);
+    background-color: linen;
+}
+
+.mainElement {
+    margin: 0px auto;
+    padding: 20px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: rgb(248, 248, 248);
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    gap: 10px;
+    box-shadow: 0px 0px 5px gray;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+p {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+label {
+    width: 100%;
+    font-size: 1.1rem;
+    text-align: left;
+}
+
+a {
+    font-size: 1.1rem;
+    text-decoration: none;
+}
+
+.formSection {
+    width: 90%;
+    margin-bottom: 10px;
+}
+
+input {
+    padding: 4px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.invalid-feedback {
+    color: #ff3849;
+}
+
+input[type="submit"], button {
+    min-width: 20%;
+    max-width: 70%;
+}
+
+input[type="text"], input[type="password"] {
+    padding: 6px;
+    border: 1px solid gray;
+}
+
+input[type="submit"] {
+    font-size: 1.1rem;
+    color: rgb(104, 53, 5);
+    background-color: rgb(255, 215, 178);
+    border: 1px solid rgb(255, 154, 39);
+}
+
+input[type="submit"]:hover {
+    background-color: linen;
+    cursor: pointer;
+}
+
+select {
+    padding: 4px 12px 4px 12px;
+}
+
+.formSectionBig label {
+    display: block;
+    width: 100%;
+}
+
+form.mainElement p > a {
+    padding: 5px;
+    color: rgb(104, 53, 5);
+}
+
+form.mainElement p > a:hover {
+    color: rgb(32, 32, 32);
+    text-decoration: underline;
+}
+
+.fileListing {
+    width: 70%;
+}
+
+.fileListWrapper {
+    width: 90%;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fileListWrapper > p {
+    margin-bottom: 30px;
+}
+
+.fileListItem {
+    width: 100%;
+    padding: 8px;
+    background-color: linen;
+    border: 1px solid rgb(255, 154, 39);
+    border-radius: 8px;
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.fileListItem button {
+    padding: 4px 12px 4px 12px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    color: rgb(104, 53, 5);
+    background-color: rgb(255, 215, 178);
+    border: 1px solid rgb(255, 154, 39);
+}
+
+.fileListItem button:hover {
+    background-color: linen;
+    cursor: pointer;
+}
+
+.fileListItemInfo {
+    width: 75%;
+
+    p {
+        text-align: left;
+        text-indent: 32px;
+    }
+    
+    p:nth-child(1) {
+        font-weight: bold;
+    }
+}
+
+.fileListItemControls {
+    width: 25%;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 10px;
+}
+
+.fileListItemControls button:nth-child(1) {
+    order: 2;
+}
+
+#addFileBtn, .returnBtn, form.mainElement .returnBtn {
+    padding: 8px 24px 8px 24px;
+    border-radius: 5px;
+    color: linen;
+    background-color: rgb(43, 43, 43);
+}
+
+#addFileBtn:hover, .returnBtn:hover, form.mainElement .returnBtn:hover {
+    color: rgb(43, 43, 43);
+    border: 1px solid rgb(43, 43, 43);
+    background-color: linen;
+    text-decoration: none;
+}
+
+.viewFileWrapper {
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.viewFileData {
+    width: 90%;
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
+    span:nth-child(1) {
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+}
+
+.viewFileExpirationWrapper {
+    width: 70%;
+    padding: 5px;
+    border-radius: 6px;
+    text-align: left;
+    color: rgb(39, 53, 94);
+    border: 1px solid rgb(123, 143, 202);
+    background-color: rgb(197, 208, 243);
+}
+
+#downloadFileBtn {
+    width: 90%;
+    padding: 5px;
+    font-size: 1.1rem;
+    border-radius: 6px;
+    color: rgb(104, 53, 5);
+    background-color: rgb(255, 215, 178);
+    border: 1px solid rgb(255, 154, 39);
+}
+
+#downloadFileBtn:hover {
+    background-color: linen;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .mainElement {
+        width: 95%;
+    }
+
+    .fileListItemControls button {
+        border-radius: 100%;
+        color: rgba(0, 0, 0, 0);
+        width: 40px;
+        height: 40px;
+        font-size: 0rem;
+    }
+}

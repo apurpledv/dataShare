@@ -85,7 +85,7 @@ public class FileIT {
         String fileName = "filename.txt";
         MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
 
-        fileService.store(mockFile, String.valueOf(USERID));
+        fileService.store(mockFile, String.valueOf(USERID), 7L);
 
         String responseGet = mockMvc.perform(MockMvcRequestBuilders.get("/api/file/list/" + USERID)
                 .header("Authorization", "Bearer " + TOKEN))
@@ -140,7 +140,7 @@ public class FileIT {
     public void testFileIT_Download() throws Exception {
         String fileName = "filename.txt";
         MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
-        String fileToken = fileService.store(mockFile, String.valueOf(USERID));
+        String fileToken = fileService.store(mockFile, String.valueOf(USERID), 7L);
 
         String downloadedFileContent = mockMvc.perform(MockMvcRequestBuilders.get("/api/file/download/" + USERID + "/" + fileToken)
                 .header("Authorization", "Bearer " + TOKEN))
@@ -165,7 +165,7 @@ public class FileIT {
         String fileName = "filename.txt";
         MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
 
-        fileService.store(mockFile, String.valueOf(USERID));
+        fileService.store(mockFile, String.valueOf(USERID), 7L);
         Long fileId = fileRepository.findAllByOwnerId(USERID).get(0).getId();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/file/" + fileId)

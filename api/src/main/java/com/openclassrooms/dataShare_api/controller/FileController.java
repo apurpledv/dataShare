@@ -32,9 +32,9 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file, @RequestParam("userId") String userId) {
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file, @RequestParam("userId") String userId, @RequestParam("expirationDays") Long expirationDays) {
         try {
-            String storedFilename = fileService.store(file, userId);
+            String storedFilename = fileService.store(file, userId, expirationDays);
             log.info("[POST] /api/file/upload" + " [" + HttpStatus.OK +"]");
             return ResponseEntity.ok(Map.of("filename", storedFilename));
         } catch (RuntimeException e) {
@@ -55,10 +55,22 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                 .body(file);
         } catch (RuntimeException e) {
-            log.error("[GET] /api/file/download/" + userId + "/" + filename + " [" + HttpStatus.BAD_REQUEST +"] " + e.toString());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            log.error("[GET] /api/file/download/" + userId + "/" + filename + " [" + HttpStatus.NOT_FOUND +"] " + e.toString());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             log.error("[GET] /api/file/download/" + userId + "/" + filename + " [" + HttpStatus.INTERNAL_SERVER_ERROR +"] " + e.toString());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{fileId}")
+    public ResponseEntity<DSFileDTO> getFile(@PathVariable Long fileId) {
+        try {
+            DSFileDTO fileData = fileService.getFileDTO(fileId);
+            log.info("[GET] /api/file/" + fileId + " [" + HttpStatus.OK +"]");
+            return ResponseEntity.ok(fileData);
+        } catch (Exception e) {
+            log.error("[GET] /api/file/" + fileId + " [" + HttpStatus.INTERNAL_SERVER_ERROR +"] " + e.toString());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

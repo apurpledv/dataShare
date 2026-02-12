@@ -93,8 +93,9 @@ public class UserController {
     public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
         try {
             String jwt = userService.login(loginDTO);
+            Long userId = userService.getUser(loginDTO.getEmail()).getId();
             log.info("[POST] /api/login (" + HttpStatus.OK + ")");
-            return ResponseEntity.ok(new TokenDTO(jwt));
+            return ResponseEntity.ok(new TokenDTO(jwt, userId));
         } catch (NoSuchElementException e) {
             log.error("[POST] /api/login (" + HttpStatus.NOT_FOUND + "): " + e.toString());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

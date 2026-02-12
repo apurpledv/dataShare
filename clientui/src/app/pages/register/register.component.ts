@@ -20,13 +20,14 @@ export class RegisterComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
   registerForm!: FormGroup;
+  registerError: boolean = false;
   submitted: boolean = false;
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-        email: ['', Validators.required],
-        password: ['', Validators.required],
-        passwordConfirm: ['', Validators.required]
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9 ]{8,}")]],
+        passwordConfirm: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9 ]{8,}")]]
     });
   }
 
@@ -50,10 +51,16 @@ export class RegisterComponent implements OnInit {
 
     this.userService.register(registerUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.router.navigateByUrl('login');
-      },
-    );
+      .subscribe({
+          next: () => {},
+          error: (err: any) => {
+            this.registerError = true;
+            console.error(err);
+          },
+          complete: () => {
+            this.router.navigateByUrl('login');
+          }
+        });
   }
 
   onReset(): void {

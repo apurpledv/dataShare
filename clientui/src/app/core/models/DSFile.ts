@@ -1,11 +1,12 @@
 export interface DSFile {
-    id: Number;
-    path: String;
-    ownerId: Number;
-    name: String;
+    id: number;
+    path: string;
+    ownerId: number;
+    name: string;
     uploadDate: Date;
     expirationDate: Date;
-    type: String;
-    size: Number;
-    expirationLabel: String;
+    type: string;
+    size: number;
+    expirationLabel: string;
+    sizeLabel: string;
 }

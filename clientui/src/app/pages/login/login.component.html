@@ -1,5 +1,17 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<form class="mainElement" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <h2>Connexion</h2>
+
+    @if (submitted) {
+        @if (loginForm.get('email')?.errors || loginForm.get('password')?.errors) {
+            <div class="invalid-feedback">
+                @if (loginForm.get('email')?.errors?.['required'] || loginForm.get('password')?.errors?.['required']) {
+                    <p>Email et/ou mot de passe requis</p>
+                }
+            </div>
+        } @else if (loginError) {
+            <div class="invalid-feedback"><p>Email et/ou mot de passe incorrect</p></div>
+        }
+    }
 
     <div class="formSection">
         <label>Email</label>
@@ -11,6 +23,6 @@
         <input name="password" type="password" placeholder="Saisissez votre mot de passe..." formControlName="password" aria-label="password" />
     </div>
 
-    <p>Pas de compte ? <a routerLink="../register">Créer un compte</a></p>
+    <p><a routerLink="../register">Créer un compte</a></p>
     <input name="submit" type="submit" value="Connexion" />
 </form>

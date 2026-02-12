@@ -77,7 +77,7 @@ public class FileServiceTests {
     public void testFileService_Store() throws IOException {
         when(fileRepository.save(any(DSFile.class))).thenReturn(mockDSFile);
 
-        String fileName = fileService.store(mockFile, mockUserId);
+        String fileName = fileService.store(mockFile, mockUserId, 7L);
 
         assertTrue(fileName.endsWith("_filename.txt"));
     }
@@ -87,11 +87,11 @@ public class FileServiceTests {
         // empty file
         MultipartFile emptyFile = mock(MultipartFile.class);
         when(emptyFile.isEmpty()).thenReturn(true);
-        assertThrows(RuntimeException.class, () -> fileService.store(emptyFile, mockUserId));
+        assertThrows(RuntimeException.class, () -> fileService.store(emptyFile, mockUserId, 7L));
 
         // IOException -> RuntimeException
         doThrow(new IOException()).when(fileStorage).copy(any(InputStream.class), any(Path.class));
-        assertThrows(RuntimeException.class, () -> fileService.store(mockFile, mockUserId));
+        assertThrows(RuntimeException.class, () -> fileService.store(mockFile, mockUserId, 7L));
     }
 
     @Test

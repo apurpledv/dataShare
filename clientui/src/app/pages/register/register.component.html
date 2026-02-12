@@ -1,14 +1,40 @@
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+<form class="mainElement" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <h2>Créer un compte</h2>
 
+    @if (submitted) {
+        @if (registerForm.get('email')?.errors || registerForm.get('password')?.errors || registerForm.get('passwordConfirm')?.errors) {
+            <div class="invalid-feedback">
+                @if (registerForm.get('email')?.errors?.['required'] || registerForm.get('password')?.errors?.['required'] || registerForm.get('passwordConfirm')?.errors?.['required']) {
+                    <p>Email et/ou mot de passe requis</p>
+                }
+            </div>
+        } @else if (registerError) {
+            <div class="invalid-feedback"><p>Cette adresse email existe déjà.</p></div>
+        }
+    }
+
     <div class="formSection">
-        <label>Adresse mail*</label>
+        <label>Email*</label>
         <input name="email" type="text" placeholder="Saisissez votre email..." formControlName="email" aria-label="email" />
+        @if (submitted && registerForm.get('email')?.errors) {
+            <div class="invalid-feedback">
+                @if (registerForm.get('email')?.errors?.['email']) {
+                    <div>Veuillez saisir une adresse mail valide</div>
+                }
+            </div>
+        }
     </div>
 
     <div class="formSection">
         <label>Mot de passe*</label>
         <input name="password" type="password" placeholder="Saisissez votre mot de passe..." formControlName="password" aria-label="password" />
+        @if (submitted && registerForm.get('password')?.errors) {
+            <div class="invalid-feedback">
+                @if (registerForm.get('password')?.errors?.['pattern']) {
+                    <div>Le mot de passe doit contenir au moins 8 caractères</div>
+                }
+            </div>
+        }
     </div>
 
     <div class="formSection">
