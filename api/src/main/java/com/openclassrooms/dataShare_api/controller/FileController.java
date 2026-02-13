@@ -24,6 +24,9 @@ import com.openclassrooms.dataShare_api.service.FileService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * FileController is an Entity that handles incoming HTTP Requests targeting Files
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/file")
@@ -31,6 +34,13 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+    /**
+     * Attempts to upload a MultipartFile into the app
+     * @param file the file to upload
+     * @param userId the file's owner
+     * @param expirationDays how many days til it is expired (ie: 1 day = tomorrow)
+     * @return [the stored file's unique identifier, 200 OK]; 400 BAD_REQUEST if an error occurred during the file's upload into the system; 500 INTERNAL_SERVER_ERROR otherwise
+     */
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file, @RequestParam("userId") String userId, @RequestParam("expirationDays") Long expirationDays) {
         try {
@@ -46,6 +56,12 @@ public class FileController {
         }
     }
 
+    /**
+     * Attempts to download a file from the server
+     * @param userId the owner's id used to search only their specific folder
+     * @param filename the file's unique identifier
+     * @return the fetched File as a downloadable Resource
+     */
     @GetMapping("/download/{userId}/{filename}")
     public ResponseEntity<Resource> download(@PathVariable Long userId, @PathVariable String filename) {
         try {
@@ -63,6 +79,11 @@ public class FileController {
         }
     }
 
+    /**
+     * Fetches a file's metadata as a DTO
+     * @param fileId
+     * @return the file's metadata as a DTO
+     */
     @GetMapping("/{fileId}")
     public ResponseEntity<DSFileDTO> getFile(@PathVariable Long fileId) {
         try {
@@ -75,6 +96,11 @@ public class FileController {
         }
     }
 
+    /**
+     * Fetches a the metadata of every file belonging to a given user as DTOs
+     * @param userId
+     * @return the metadata of every file belonging to a given user as DTOs
+     */
     @GetMapping("/list/{userId}")
     public ResponseEntity<List<DSFileDTO>> listFiles(@PathVariable Long userId) {
         try {
@@ -87,6 +113,11 @@ public class FileController {
         }
     }
 
+    /**
+     * Attempts to delete a given file from the db and the system
+     * @param fileId
+     * @return 200 OK if successful; 404 NOT_FOUND if the file is not found; 500 INTERNAL_SERVER_ERROR if an error occurred during the physical file's deletion
+     */
     @DeleteMapping("/{fileId}")
     public ResponseEntity<HttpStatusCode> deleteFile(@PathVariable Long fileId) {
         try {

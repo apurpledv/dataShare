@@ -9,8 +9,8 @@
                     <p>{{file.expirationLabel}}</p>
                 </div>
                 <div class="fileListItemControls">
-                    <button (click)="onDelete(file.id)"><img src="img/bin.png" width="12" alt="deleteFileLogo"/> Supprimer</button>
-                    <button (click)="onViewFile(file.id)">Accéder <img src="img/right-arrow.png" width="12" alt="viewFileLogo"/></button>
+                    <button class="deleteFileBtn" (click)="onDelete(file.id)"><img src="img/bin.png" width="12" alt="deleteFileLogo"/> Supprimer</button>
+                    <button class="viewFileBtn" (click)="onViewFile(file.id)">Accéder <img src="img/right-arrow.png" width="12" alt="viewFileLogo"/></button>
                 </div>
             </div>
         }

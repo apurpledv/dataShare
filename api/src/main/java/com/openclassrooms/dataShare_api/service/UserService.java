@@ -17,6 +17,9 @@ import com.openclassrooms.dataShare_api.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 
+/**
+ * UserService is an Entity that handles basic logic to manage User Entities (CRUD)
+ */
 @Service
 @Transactional
 public class UserService {
@@ -29,18 +32,39 @@ public class UserService {
     @Autowired
     JwtService jwtService;
 
+    /**
+     * Fetches a single user using his id
+     * @param id
+     * @return the user
+     */
     public User getUser(Long id) {
         return userRepository.findById(id).get();
     }
 
+    /**
+     * Fetches a single user using his email
+     * @param email
+     * @return the user
+     */
     public User getUser(String email) {
         return userRepository.findByEmail(email).get();
     }
 
+    /**
+     * Fetches every user from the db
+     * @return a list of every user
+     */
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
+    /**
+     * Updates a given user with new data
+     * @param userId
+     * @param user new user data
+     * @return the updated user
+     * @throws NoSuchElementException if the user is not found
+     */
     public User updateUser(Long userId, User user) throws NoSuchElementException {
         Optional<User> userFound = userRepository.findById(userId);
         if (userFound.isEmpty())
@@ -53,6 +77,11 @@ public class UserService {
         return userRepository.save(updatedUser);
     }
 
+    /**
+     * Deletes a given user
+     * @param userId
+     * @throws NoSuchElementException if the user is not found
+     */
     public void deleteUser(Long userId) throws NoSuchElementException {
         Optional<User> userFound = userRepository.findById(userId);
         if (userFound.isEmpty())
@@ -61,6 +90,13 @@ public class UserService {
         userRepository.delete(userFound.get());
     }
 
+    /**
+     * Attempts to log in a user, using the provided email and password
+     * @param loginDto the login details (email + password)
+     * @return a valid Jwt if successful
+     * @throws NoSuchElementException if the user doesn't exist (email not found)
+     * @throws BadCredentialsException if the user's password doesn't match the one in the db
+     */
     public String login(LoginDTO loginDto) throws NoSuchElementException, BadCredentialsException {
         Optional<User> userFound = userRepository.findByEmail(loginDto.getEmail());
         if (userFound.isEmpty())
@@ -78,6 +114,13 @@ public class UserService {
         }
     }
 
+    /**
+     * Attempts to register a new user
+     * @param user the user data (email + password)
+     * @return the registered user, if successful
+     * @throws IllegalArgumentException if the email or password is not valid
+     * @throws EntityExistsException if a user with this email already exists
+     */
     public User register(User user) throws IllegalArgumentException, EntityExistsException {
         if (user.getEmail().isBlank() || user.getPassword().isBlank())
             throw new IllegalArgumentException("Email or Password is invalid.");

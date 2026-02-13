@@ -41,7 +41,7 @@ export class DownloadComponent implements OnInit {
     });
   }
 
-  private getSizeLabel(fileSize: number): string {
+  public getSizeLabel(fileSize: number): string {
     let fileLabel = '';
 
     if (fileSize < 1000) {

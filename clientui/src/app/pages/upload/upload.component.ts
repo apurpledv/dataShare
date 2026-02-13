@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { FileService } from '../../core/services/file.service';
 import { CommonModule } from '@angular/common';
@@ -19,7 +19,7 @@ export class UploadComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
 
-  private maxFileSize = 1073741824; // 1 Go
+  maxFileSize = 1073741824; // 1 Go
 
   uploadForm!: FormGroup;
   selectedFile!: File;
@@ -28,7 +28,7 @@ export class UploadComponent implements OnInit {
   ngOnInit() {
     this.uploadForm = this.formBuilder.group({
         password: [''],
-        expirationDate: ['7']
+        expirationDate: ['7', Validators.required]
     });
   }
 

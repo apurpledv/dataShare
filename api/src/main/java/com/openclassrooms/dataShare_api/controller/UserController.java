@@ -28,6 +28,9 @@ import com.openclassrooms.dataShare_api.service.UserService;
 import jakarta.persistence.EntityExistsException;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * UserController is an Entity that handles incoming HTTP Requests targeting Users
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -38,18 +41,33 @@ public class UserController {
     @Autowired
     FileService fileService;
 
+    /**
+     * Fetches a given User
+     * @param id
+     * @return [the User, 200 OK]
+     */
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         log.info("[GET] /api/user/" + id + " (" + HttpStatus.OK + ")");
         return ResponseEntity.ok(userService.getUser(id));
     }
 
+    /**
+     * Fetches every User
+     * @return [a list of every User, 200 OK]
+     */
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
         log.info("[GET] /api/users (" + HttpStatus.OK + ")");
         return ResponseEntity.ok(userService.getUsers());
     }
 
+    /**
+     * Updates a given User
+     * @param id the updated User'd id
+     * @param user the new data
+     * @return 200 OK if successful; 404 NOT_FOUND if the User is not found; 500 INTERNAL_SERVER_ERROR otherwise
+     */
     @PutMapping("/user/{id}")
     public ResponseEntity<HttpStatusCode> updateUser(@PathVariable Long id, @Validated @RequestBody User user) {
         try {
@@ -65,6 +83,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Deletes a given User
+     * @param id
+     * @return 200 OK if successful; 404 NOT_FOUND if the User is not found; 500 INTERNAL_SERVER_ERROR if another error occurred (for instance, during the User's files deletion process)
+     */
     @DeleteMapping("/user/{id}")
     public ResponseEntity<HttpStatusCode> deleteUser(@PathVariable Long id) {
         try {
@@ -89,6 +112,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Attempts to log a User in
+     * @param loginDTO the login information (email + password)
+     * @return [a valid Jwt, 200 OK]; 404 NOT_FOUND if the User is not found; 401 UNAUTHORIZED if the password is incorrect; 500 INTERNAL_SERVER_ERROR otherwise
+     */
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
         try {
@@ -108,6 +136,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Attempts to register a User
+     * @param user the register information (email + password)
+     * @return 201 CREATED if successful; 400 BAD_REQUEST if a user with that email already exists or the provided information is invalid; 500 INTERNAL_SERVER_ERROR otherwise
+     */
     @PostMapping("/register")
     public ResponseEntity<HttpStatusCode> register(@Validated @RequestBody User user) {
         try {

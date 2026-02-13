@@ -22,6 +22,9 @@ import com.openclassrooms.dataShare_api.dto.DSFileDTO;
 import com.openclassrooms.dataShare_api.model.DSFile;
 import com.openclassrooms.dataShare_api.repository.FileRepository;
 
+/**
+ * FileService is an Entity that handles basic I/O interactions between the local storage system, the database, and File/DSFile Entities
+ */
 @Service
 public class FileService {
     private final LocalFileStorage fileStorage;
@@ -34,6 +37,14 @@ public class FileService {
         this.rootLocation = properties.getLocation();
     }
 
+    /**
+     * Stores a given MultipartFile into the local storage system, creating a unique identifier using the User's ID and the File's name
+     * @param file the file to store
+     * @param userId the file's owner's id
+     * @param expirationDays the number of days until the file should be automatically removed
+     * @return the stored file's identifier
+     * @throws RuntimeException
+     */
     public String store(MultipartFile file, String userId, Long expirationDays) throws RuntimeException {
         if (file.isEmpty()) {
             throw new RuntimeException("Cannot store empty file");
@@ -70,6 +81,13 @@ public class FileService {
         }
     }
 
+    /**
+     * Fetches a file from the local storage system using the user's id for the folder, and the file's name
+     * @param userId the user's id
+     * @param filename the unique identifier of the file
+     * @return the physical file in Resource format
+     * @throws RuntimeException if the file is not found in the local storage system
+     */
     public Resource loadAsResource(Long userId, String filename) throws RuntimeException {
         try {
             Path file = rootLocation.resolve(String.valueOf(userId)).resolve(filename);
@@ -84,10 +102,20 @@ public class FileService {
         }
     }
 
+    /**
+     * Fetches the metadata of every file belonging to a given user
+     * @param userId the user's id
+     * @return a list of all his files' metadata (expiration date, type, size...)
+     */
     public List<DSFile> getFiles(Long userId) {
         return fileRepository.findAllByOwnerId(userId);
     }
 
+    /**
+     * Fetches the metadata of every file belonging to a given user as a DTO
+     * @param userId the user's id
+     * @return a list of all his files' metadata (expiration date, type, size...) as a DTO
+     */
     public List<DSFileDTO> getFilesDTO(Long userId) {
         List<DSFileDTO> validFiles = new ArrayList<>();
         List<DSFile> expiredFiles = new ArrayList<>();
@@ -113,6 +141,12 @@ public class FileService {
         return validFiles;
     }
 
+    /**
+     * Fetches a single file's metadata belonging to a given user
+     * @param fileId the file's id (not its unique identifier)
+     * @return the file's metadata as a DTO
+     * @throws NoSuchElementException if the file is not found in the db
+     */
     public DSFileDTO getFileDTO(Long fileId) throws NoSuchElementException {
         Optional<DSFile> file = fileRepository.findById(fileId);
         if (file.isEmpty())
@@ -127,6 +161,12 @@ public class FileService {
         );
     }
 
+    /**
+     * Deletes a given file from the system and the db
+     * @param fileId the file's id (not its unique identifier)
+     * @throws NoSuchElementException if the file is not found in the db
+     * @throws RuntimeException if something goes wrong during the physical file's deletion
+     */
     public void deleteFile(Long fileId) throws NoSuchElementException, RuntimeException {
         Optional<DSFile> fileFound = fileRepository.findById(fileId);
         if (fileFound.isEmpty())
@@ -135,6 +175,11 @@ public class FileService {
         deleteFile(fileFound.get());
     }
 
+    /**
+     * Deletes a given file from the system and the db
+     * @param file the file Entity to delete
+     * @throws RuntimeException if an IOException occurs
+     */
     private void deleteFile(DSFile file) throws RuntimeException {
         try {
             fileStorage.deleteIfExists(rootLocation
