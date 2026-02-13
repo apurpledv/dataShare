@@ -138,7 +138,6 @@ public class FileServiceTests {
             filesList.add(mockExpiredFile);
 
         when(fileRepository.findAllByOwnerId(anyLong())).thenReturn(filesList);
-        when(fileRepository.findById(anyLong())).thenReturn(Optional.of(mockDSFile));
         when(fileStorage.deleteIfExists(any(Path.class))).thenReturn(true);
 
         fileService.getFilesDTO(Long.valueOf(mockUserId));

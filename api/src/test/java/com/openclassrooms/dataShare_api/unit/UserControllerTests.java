@@ -2,6 +2,7 @@ package com.openclassrooms.dataShare_api.unit;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -90,6 +91,7 @@ public class UserControllerTests {
 
     @Test
     public void testUserController_Login() throws Exception {
+        when(userService.getUser(anyString())).thenReturn(new User("testUser", "testUser"));
         when(userService.login(any(LoginDTO.class))).thenReturn("mockToken");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
@@ -104,6 +106,7 @@ public class UserControllerTests {
         LoginDTO mockLoginDTO = new LoginDTO("testUser", "testUser");
 
         // NoSuchElementException
+        when(userService.getUser(anyString())).thenReturn(new User("testUser", "testUser"));
         when(userService.login(any(LoginDTO.class))).thenThrow(new NoSuchElementException());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/login")

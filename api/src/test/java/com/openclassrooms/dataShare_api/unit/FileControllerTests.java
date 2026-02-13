@@ -43,8 +43,12 @@ public class FileControllerTests {
             filesList.add(new DSFileDTO(null, null, null, null, null, null, null, null));
 
         when(fileService.getFilesDTO(anyLong())).thenReturn(filesList);
+        when(fileService.getFileDTO(anyLong())).thenReturn(new DSFileDTO(null, null, null, null, null, null, null, null));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/file/list/1"))
+            .andExpect(MockMvcResultMatchers.status().isOk());
+        
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/file/1"))
             .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -57,6 +61,7 @@ public class FileControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/file/upload")
                 .file("file", mockFile.getBytes())
                 .param("userId", "0")
+                .param("expirationDays", "7")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isOk());
@@ -72,6 +77,7 @@ public class FileControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/file/upload")
                 .file("file", mockFile.getBytes())
                 .param("userId", "0")
+                .param("expirationDays", "7")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -97,7 +103,7 @@ public class FileControllerTests {
             .thenThrow(new RuntimeException());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/file/download/1/1"))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest());
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test

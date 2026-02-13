@@ -46,6 +46,7 @@ public class FileIT {
     private String TOKEN;
     private Long USERID;
     private DSFile DSFILE;
+    private String EXPIRATIONDAYS;
     
     static final private PostgreSQLContainer postgres = new PostgreSQLContainer(DockerImageName.parse("postgres:17"));
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -69,6 +70,7 @@ public class FileIT {
             .build());
 
         USERID = userService.register(new User("EMAIL", "PASSWORD")).getId();
+        EXPIRATIONDAYS = "7";
         DSFILE = new DSFile();
             DSFILE.setOwnerId(USERID);
             DSFILE.setPath("path/to/file.txt");
@@ -113,6 +115,7 @@ public class FileIT {
                 .header("Authorization", "Bearer " + TOKEN)
                 .file("file", mockFile.getBytes())
                 .param("userId", String.valueOf(USERID))
+                .param("expirationDays", String.valueOf(EXPIRATIONDAYS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isOk());
@@ -131,6 +134,7 @@ public class FileIT {
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/file/upload")
                 .file("file", mockFile.getBytes())
                 .param("userId", String.valueOf(USERID))
+                .param("expirationDays", String.valueOf(EXPIRATIONDAYS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized());
