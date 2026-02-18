@@ -7,3 +7,7 @@ Pour mettre à jour Angular, utilisez cette commande :
 ```
 npm audit fix --force
 ```
+
+## Évolution
+
+Pour assurer la stabilité et la sécurité du projet, il faudra penser à mettre à jour les frameworks utilisés (Spring Boot et Angular) à chaque nouvelle version majeure.
