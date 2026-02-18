@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.openclassrooms</groupId>
-	<artifactId>dataShare-api</artifactId>
+	<artifactId>api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dataShare-api</name>
+	<name>api</name>
 	<description>An API to interact with DataShare data</description>
 	<url/>
 	<licenses>
@@ -190,5 +190,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
