@@ -25,3 +25,7 @@ Certaines fonctionnalités diffèrent grandement dans leur temps d'exécution en
 ### Interprétation
 
 Comme vu sur ces captures d'écran, notre endpoint "/upload" rentre bien dans nos critères d'acceptation. Pour réitérer d'autres tests sur d'autres endpoints, une simple inspection de la page (F12) et de l'onglet "Network" lors d'une interaction avec l'API révèle les temps de réponses.
+
+## Évolution
+
+Ces tests ayant été réalisés à la main, utiliser à l'avenir un outil de mesure automatisée des performances, tel que K6, serait une bonne piste d'amélioration.
