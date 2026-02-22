@@ -1,3 +1,4 @@
+<app-header></app-header>
 <article class="mainElement">
     <div class="viewFileWrapper">
         <p><a class="returnBtn" routerLink="../../dashboard">Retour</a></p>
@@ -7,6 +8,7 @@
         <div class="viewFileData">
             <span>{{file.name}}</span>
             <span>{{file.sizeLabel}}</span>
+            <span>Uploadé le {{uploadDateLabel}}</span>
         </div>
 
         <div class="viewFileExpirationWrapper">

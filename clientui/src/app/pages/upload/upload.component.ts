@@ -5,10 +5,11 @@ import { Router, RouterLink } from '@angular/router';
 import { FileService } from '../../core/services/file.service';
 import { CommonModule } from '@angular/common';
 import { UploadFile } from '../../core/models/UploadFile';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-upload',
-  imports: [RouterLink, CommonModule, ReactiveFormsModule],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, HeaderComponent],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss'
 })

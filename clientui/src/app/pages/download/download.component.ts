@@ -3,10 +3,11 @@ import { DSFile } from '../../core/models/DSFile';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FileService } from '../../core/services/file.service';
 import { TimeService } from '../../core/services/time.service';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-download',
-  imports: [RouterLink],
+  imports: [RouterLink, HeaderComponent],
   templateUrl: './download.component.html',
   styleUrl: './download.component.scss'
 })
@@ -16,6 +17,7 @@ export class DownloadComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private userId!: number;
   private fileId!: number;
+  uploadDateLabel!: string;
 
   file!: DSFile;
 
@@ -37,6 +39,13 @@ export class DownloadComponent implements OnInit {
           }
           this.file.expirationLabel = expirationLabel;
           this.file.sizeLabel = this.getSizeLabel(this.file.size);
+
+          const options: Intl.DateTimeFormatOptions = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          };
+          this.uploadDateLabel = this.file.uploadDate.toLocaleString(undefined, options);
         });
     });
   }

@@ -4,6 +4,7 @@ import { FileService } from '../../core/services/file.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from "@angular/router";
 import { TimeService } from '../../core/services/time.service';
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,13 @@ export class DashboardComponent implements OnInit {
   userId!: Number;
 
   public ngOnInit(): void {
+    var btn = document.getElementById('logoutBtn');
+    if (btn == null)
+      return;
+
+    if (sessionStorage.getItem('user_id') != null)
+      btn.innerText = "Déconnexion";
+    
     this.userId = parseInt(sessionStorage.getItem('user_id') || "-1");
 
     this.fileService.getFiles(this.userId)
@@ -50,5 +58,15 @@ export class DashboardComponent implements OnInit {
             location.reload();
           }
         });
+  }
+
+  onLogout(): void {
+    var btn = document.getElementById('logoutBtn');
+    if (btn == null)
+      return;
+
+    sessionStorage.removeItem('user_id');
+    sessionStorage.removeItem('auth_token');
+    btn.innerText = "Se connecter";
   }
 }
