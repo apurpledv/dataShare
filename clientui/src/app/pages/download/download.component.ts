@@ -3,10 +3,11 @@ import { DSFile } from '../../core/models/DSFile';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FileService } from '../../core/services/file.service';
 import { TimeService } from '../../core/services/time.service';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-download',
-  imports: [RouterLink],
+  imports: [RouterLink, HeaderComponent],
   templateUrl: './download.component.html',
   styleUrl: './download.component.scss'
 })
