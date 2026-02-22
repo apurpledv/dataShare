@@ -8,7 +8,7 @@ import { DownloadComponent } from './pages/download/download.component';
 import { UploadConfirmComponent } from './pages/upload-confirm/upload-confirm.component';
 
 export const routes: Routes = [
-    { path: '', component: AppComponent },
+    { path: '', component: LoginComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'dashboard', component: DashboardComponent },

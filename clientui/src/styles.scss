@@ -39,7 +39,7 @@ header a:hover {
 }
 
 .mainElement {
-    margin: 0px auto;
+    margin: 50px auto;
     padding: 20px;
     width: 40%;
     display: flex;
@@ -55,6 +55,7 @@ header a:hover {
 
 h1 {
     font-size: 2rem;
+    font-weight: bold;
 }
 
 h2 {
@@ -137,8 +138,53 @@ form.mainElement p > a:hover {
     text-decoration: underline;
 }
 
+section {
+    display: flex;
+    flex-direction: row;
+    min-height: 80%;
+    align-items: start;
+    height: 100dvh;
+}
+
 .fileListing {
-    width: 70%;
+    margin: 0px auto;
+    padding: 0px;
+    width: 100%;
+    border-radius: 0px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+.sideDashboard {
+    padding: 10px;
+    width: 20%;
+    height: 100%;
+    background: #ff3849;
+    background: linear-gradient(0deg,rgb(255, 123, 100) 0%, rgba(255, 166, 128, 1) 100%);
+    border-right: 4px solid rgb(255, 215, 178);
+}
+
+.sideDashboard h1 {
+    margin-bottom: 50px;
+}
+
+.dashboardHeader {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    background-color: linen;
+    border-bottom: 2px solid rgb(255, 215, 178);
+    display: inline-flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 20px;
+}
+
+.dashboardHeader > p:nth-child(1) {
+    order: 2;
 }
 
 .fileListWrapper {
@@ -201,14 +247,14 @@ form.mainElement p > a:hover {
     order: 2;
 }
 
-#addFileBtn, .returnBtn, form.mainElement .returnBtn {
+#addFileBtn, .returnBtn, form.mainElement .returnBtn, .linkBtn {
     padding: 8px 24px 8px 24px;
     border-radius: 5px;
     color: linen;
     background-color: rgb(43, 43, 43);
 }
 
-#addFileBtn:hover, .returnBtn:hover, form.mainElement .returnBtn:hover {
+#addFileBtn:hover, .returnBtn:hover, form.mainElement .returnBtn:hover, .linkBtn:hover {
     color: rgb(43, 43, 43);
     border: 1px solid rgb(43, 43, 43);
     background-color: linen;
@@ -265,14 +311,23 @@ form.mainElement p > a:hover {
 
 @media (max-width: 1100px) {
     .mainElement {
-        width: 95%;
+        width: 100%;
+    }
+
+    .sideDashboard {
+        display: none;
     }
 
     .fileListItemControls button {
         border-radius: 100%;
         color: rgba(0, 0, 0, 0);
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
         font-size: 0rem;
+    }
+
+    .fileListItemControls button img {
+        width: 25px;
+        height: 25px;
     }
 }

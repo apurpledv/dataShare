@@ -1,18 +1,27 @@
-<article class="mainElement fileListing">
-    <h2>Mes fichiers</h2>
-    <div class="fileListWrapper">
-        <p><a id="addFileBtn" routerLink="../upload">Ajouter des fichiers</a></p>
-        @for (file of filesList; track file.id) {
-            <div class="fileListItem">
-                <div class="fileListItemInfo">
-                    <p>{{file.name}}</p>
-                    <p>{{file.expirationLabel}}</p>
+<section>
+    <article class="sideDashboard">
+        <h1>DataShare</h1>
+        <p><a class="linkBtn" routerLink="../dashboard">Mes fichiers</a></p>
+    </article>
+    <article class="mainElement fileListing">
+        <div class="dashboardHeader">
+            <p><a id="addFileBtn" routerLink="../upload">Ajouter des fichiers</a></p>
+            <p><a id="logoutBtn" class="linkBtn" (click)="onLogout()" routerLink="../login">Se connecter</a></p>
+        </div>
+        <h2>Mes fichiers</h2>
+        <div class="fileListWrapper">
+            @for (file of filesList; track file.id) {
+                <div class="fileListItem">
+                    <div class="fileListItemInfo">
+                        <p>{{file.name}}</p>
+                        <p>{{file.expirationLabel}}</p>
+                    </div>
+                    <div class="fileListItemControls">
+                        <button class="deleteFileBtn" (click)="onDelete(file.id)"><img src="img/bin.png" width="12" alt="deleteFileLogo"/> Supprimer</button>
+                        <button class="viewFileBtn" (click)="onViewFile(file.id)">Accéder <img src="img/right-arrow.png" width="12" alt="viewFileLogo"/></button>
+                    </div>
                 </div>
-                <div class="fileListItemControls">
-                    <button class="deleteFileBtn" (click)="onDelete(file.id)"><img src="img/bin.png" width="12" alt="deleteFileLogo"/> Supprimer</button>
-                    <button class="viewFileBtn" (click)="onViewFile(file.id)">Accéder <img src="img/right-arrow.png" width="12" alt="viewFileLogo"/></button>
-                </div>
-            </div>
-        }
-    </div>
-</article>
+            }
+        </div>
+    </article>
+</section>
