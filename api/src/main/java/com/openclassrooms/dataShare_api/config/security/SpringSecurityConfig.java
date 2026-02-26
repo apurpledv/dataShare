@@ -45,6 +45,11 @@ public class SpringSecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 // No auth needed on :
                 .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html",
+                    "/swagger-ui/**"
+                ).permitAll()
                 .requestMatchers("/api/register", "/api/login").permitAll()
                 // Others protected routes will be added here.
                 .anyRequest().authenticated()

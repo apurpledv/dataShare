@@ -64,7 +64,7 @@ public class UserIT {
         TOKEN = jwtService.generateToken(org.springframework.security.core.userdetails.User.builder()
             .username(EMAIL)
             .password(passwordEncoder.encode(PASSWORD))
-            .build());
+            .build(), 1L);
         
         USER = new User(EMAIL, PASSWORD);
     }
@@ -79,10 +79,14 @@ public class UserIT {
         // Save a test User into DB
         USER = userService.register(USER);
         Long userId = USER.getId();
+        String customToken = jwtService.generateToken(org.springframework.security.core.userdetails.User.builder()
+            .username(EMAIL)
+            .password(passwordEncoder.encode(PASSWORD))
+            .build(), userId);
 
         // TEST: Get our test User
         String responseGet = mockMvc.perform(MockMvcRequestBuilders.get("/api/user/" + userId)
-                .header("Authorization", "Bearer " + TOKEN))
+                .header("Authorization", "Bearer " + customToken))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn().getResponse().getContentAsString();
 
@@ -144,9 +148,13 @@ public class UserIT {
         // Save a test User into DB
         USER = userService.register(USER);
         Long userId = USER.getId();
+        String customToken = jwtService.generateToken(org.springframework.security.core.userdetails.User.builder()
+            .username(EMAIL)
+            .password(passwordEncoder.encode(PASSWORD))
+            .build(), userId);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/user/" + userId)
-                .header("Authorization", "Bearer " + TOKEN)
+                .header("Authorization", "Bearer " + customToken)
                 .content(objectMapper.writeValueAsString(updatedUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -172,9 +180,13 @@ public class UserIT {
         // Save a test User into DB
         USER = userService.register(USER);
         Long userId = USER.getId();
+        String customToken = jwtService.generateToken(org.springframework.security.core.userdetails.User.builder()
+            .username(EMAIL)
+            .password(passwordEncoder.encode(PASSWORD))
+            .build(), userId);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/" + userId)
-                .header("Authorization", "Bearer " + TOKEN))
+                .header("Authorization", "Bearer " + customToken))
             .andExpect(MockMvcResultMatchers.status().isOk());
         
         assertTrue(userRepository.findById(userId).isEmpty());

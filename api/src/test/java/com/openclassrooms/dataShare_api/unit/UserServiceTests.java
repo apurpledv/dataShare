@@ -143,7 +143,7 @@ public class UserServiceTests {
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(mockUser));
         when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(true);
-        when(jwtService.generateToken(any(UserDetails.class))).thenReturn("mockToken");
+        when(jwtService.generateToken(any(UserDetails.class), anyLong())).thenReturn("mockToken");
 
         String mockToken = userService.login(mockLoginDTO);
         assertEquals("mockToken", mockToken);

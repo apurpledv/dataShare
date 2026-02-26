@@ -108,7 +108,7 @@ public class UserService {
                 .password(passwordEncoder.encode(loginDto.getPassword()))
                 .build();
 
-            return jwtService.generateToken(userDetails);
+            return jwtService.generateToken(userDetails, userFound.get().getId());
         } else {
             throw new BadCredentialsException("Email or password is incorrect.");
         }

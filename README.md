@@ -7,6 +7,7 @@ Une application qui simplifie le partage de fichiers !
 Cette application nécessite plusieurs éléments :
 * Node 10.8.2
 * Docker 28.3.3 (avec Docker Desktop au besoin)
+* Avoir une variable d'environnement pour la clé JWT (un fichier .env à la racine de api/, avec le champs "JWT_SECRET_KEY")
 
 ## Procédures de démarrage
 

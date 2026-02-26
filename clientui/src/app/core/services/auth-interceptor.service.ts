@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
     if (publicEndpoints.some(url => req.url.includes(url))) {
       return next.handle(req);
     }
-
+    
     // if no token -> send to login
     if (!token) {
       this.router.navigateByUrl('login');
