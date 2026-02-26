@@ -25,9 +25,10 @@ public class JwtService {
      * @param userDetails must contain at least an email as "userName"
      * @return the generated Jwt
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Long userId) {
         return Jwts.builder()
             .setSubject(userDetails.getUsername())
+            .claim("userId", userId)
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))   // lasts 30 minutes
             .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();

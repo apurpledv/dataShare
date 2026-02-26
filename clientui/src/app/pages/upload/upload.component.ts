@@ -69,10 +69,10 @@ export class UploadComponent implements OnInit {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length <= 0)
+    if (!input.files || input.files[0].size <= 0)
       return;
 
-    if (input.files.length > this.maxFileSize) {
+    if (input.files[0].size > this.maxFileSize) {
       alert("La taille du fichier ne peut pas excéder 1 Go.")
       return;
     }

@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -30,12 +31,18 @@ public class FileService {
     private final LocalFileStorage fileStorage;
     private final FileRepository fileRepository;
     private final Path rootLocation;
+    private List<String> acceptedFileTypes = Arrays.asList(
+        "png", "jpg", "jpeg", "gif", "webp",
+        "txt", "csv",
+        "pdf"
+    );
 
     public FileService(LocalFileStorage fileStorage, FileRepository fileRepository, StorageProperties properties) {
         this.fileStorage = fileStorage;
         this.fileRepository = fileRepository;
         this.rootLocation = properties.getLocation();
     }
+
 
     /**
      * Stores a given MultipartFile into the local storage system, creating a unique identifier using the User's ID and the File's name
@@ -48,6 +55,10 @@ public class FileService {
     public String store(MultipartFile file, String userId, Long expirationDays) throws RuntimeException {
         if (file.isEmpty()) {
             throw new RuntimeException("Cannot store empty file");
+        }
+        
+        if (!acceptedFileTypes.contains(FilenameUtils.getExtension(file.getOriginalFilename()))) {
+            throw new RuntimeException("Invalid file type");
         }
 
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
@@ -83,14 +94,14 @@ public class FileService {
 
     /**
      * Fetches a file from the local storage system using the user's id for the folder, and the file's name
-     * @param userId the user's id
+     * @param ownerId the owner's id
      * @param filename the unique identifier of the file
      * @return the physical file in Resource format
      * @throws RuntimeException if the file is not found in the local storage system
      */
-    public Resource loadAsResource(Long userId, String filename) throws RuntimeException {
+    public Resource loadAsResource(Long ownerId, String filename) throws RuntimeException {
         try {
-            Path file = rootLocation.resolve(String.valueOf(userId)).resolve(filename);
+            Path file = rootLocation.resolve(String.valueOf(ownerId)).resolve(filename);
             Resource resource = fileStorage.load(file);
 
             if (resource.exists() && resource.isReadable()) {
@@ -104,24 +115,24 @@ public class FileService {
 
     /**
      * Fetches the metadata of every file belonging to a given user
-     * @param userId the user's id
+     * @param ownerId the owner's id
      * @return a list of all his files' metadata (expiration date, type, size...)
      */
-    public List<DSFile> getFiles(Long userId) {
-        return fileRepository.findAllByOwnerId(userId);
+    public List<DSFile> getFiles(Long ownerId) {
+        return fileRepository.findAllByOwnerId(ownerId);
     }
 
     /**
      * Fetches the metadata of every file belonging to a given user as a DTO
-     * @param userId the user's id
+     * @param ownerId the owner's id
      * @return a list of all his files' metadata (expiration date, type, size...) as a DTO
      */
-    public List<DSFileDTO> getFilesDTO(Long userId) {
+    public List<DSFileDTO> getFilesDTO(Long ownerId) {
         List<DSFileDTO> validFiles = new ArrayList<>();
         List<DSFile> expiredFiles = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         
-        for(DSFile file : fileRepository.findAllByOwnerId(userId)) {
+        for(DSFile file : fileRepository.findAllByOwnerId(ownerId)) {
             if (now.isBefore(file.getExpirationDate())) {
                 validFiles.add(new DSFileDTO(
                     file.getId(), file.getPath(), file.getOwnerId(), file.getName(), 
@@ -147,12 +158,15 @@ public class FileService {
      * @return the file's metadata as a DTO
      * @throws NoSuchElementException if the file is not found in the db
      */
-    public DSFileDTO getFileDTO(Long fileId) throws NoSuchElementException {
+    public DSFileDTO getFileDTO(Long fileId, Long ownerId) throws NoSuchElementException {
         Optional<DSFile> file = fileRepository.findById(fileId);
         if (file.isEmpty())
             throw new NoSuchElementException();
 
         DSFile fileFound = file.get();
+
+        if (fileFound.getOwnerId() != ownerId)
+            throw new NoSuchElementException();
         
         return new DSFileDTO(
             fileFound.getId(), fileFound.getPath(), fileFound.getOwnerId(), fileFound.getName(), 

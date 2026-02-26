@@ -3,6 +3,7 @@ package com.openclassrooms.dataShare_api.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,17 +64,17 @@ public class FileIT {
 
     @BeforeEach
     public void setup() {
-        // for auth-needed endpoint testings, make a custom one
-        TOKEN = jwtService.generateToken(org.springframework.security.core.userdetails.User.builder()
-            .username("EMAIL")
-            .password(passwordEncoder.encode("PASSWORD"))
-            .build());
-
         USERID = userService.register(new User("EMAIL", "PASSWORD")).getId();
         EXPIRATIONDAYS = "7";
         DSFILE = new DSFile();
             DSFILE.setOwnerId(USERID);
             DSFILE.setPath("path/to/file.txt");
+
+        // for auth-needed endpoint testings, make a custom one
+        TOKEN = jwtService.generateToken(org.springframework.security.core.userdetails.User.builder()
+            .username("EMAIL")
+            .password(passwordEncoder.encode("PASSWORD"))
+            .build(), USERID);
     }
 
     @AfterEach
@@ -85,7 +86,7 @@ public class FileIT {
     @Test
     public void testFileIT_GetAllFilesOfUser() throws Exception {
         String fileName = "filename.txt";
-        MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
+        MockMultipartFile mockFile = new MockMultipartFile("data.txt", fileName, "text/plain", "Some text".getBytes());
 
         fileService.store(mockFile, String.valueOf(USERID), 7L);
 
@@ -109,12 +110,12 @@ public class FileIT {
     @Test
     public void testFileIT_Upload() throws Exception {
         String fileName = "filename.txt";
-        MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
+        MockMultipartFile mockFile = new MockMultipartFile("data.txt", fileName, "text/plain", "Some text".getBytes());
+        System.out.println(mockFile.getOriginalFilename());
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/file/upload")
                 .header("Authorization", "Bearer " + TOKEN)
                 .file("file", mockFile.getBytes())
-                .param("userId", String.valueOf(USERID))
                 .param("expirationDays", String.valueOf(EXPIRATIONDAYS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -129,7 +130,7 @@ public class FileIT {
     @Test
     public void testFileIT_Upload_Unauthorized() throws Exception {
         String fileName = "filename.txt";
-        MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
+        MockMultipartFile mockFile = new MockMultipartFile("data.txt", fileName, "text/plain", "Some text".getBytes());
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/file/upload")
                 .file("file", mockFile.getBytes())
@@ -143,10 +144,10 @@ public class FileIT {
     @Test
     public void testFileIT_Download() throws Exception {
         String fileName = "filename.txt";
-        MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
+        MockMultipartFile mockFile = new MockMultipartFile("data.txt", fileName, "text/plain", "Some text".getBytes());
         String fileToken = fileService.store(mockFile, String.valueOf(USERID), 7L);
 
-        String downloadedFileContent = mockMvc.perform(MockMvcRequestBuilders.get("/api/file/download/" + USERID + "/" + fileToken)
+        String downloadedFileContent = mockMvc.perform(MockMvcRequestBuilders.get("/api/file/download/" + fileToken)
                 .header("Authorization", "Bearer " + TOKEN))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn().getResponse().getContentAsString();
@@ -160,14 +161,14 @@ public class FileIT {
 
     @Test
     public void testFileIT_Download_Unauthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/file/download/" + USERID + "/" + "fileToken"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/file/download/" + "fileToken"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
     @Test
     public void testFileIT_Delete() throws Exception {
         String fileName = "filename.txt";
-        MockMultipartFile mockFile = new MockMultipartFile("data", fileName, "text/plain", "Some text".getBytes());
+        MockMultipartFile mockFile = new MockMultipartFile("data.txt", fileName, "text/plain", "Some text".getBytes());
 
         fileService.store(mockFile, String.valueOf(USERID), 7L);
         Long fileId = fileRepository.findAllByOwnerId(USERID).get(0).getId();

@@ -23,7 +23,7 @@ export class FileService {
       responseType: 'blob' as 'json'
     };
 
-    return this.httpClient.get<Blob>('/api/file/download/' + userId + "/" + filePath, httpOptions);
+    return this.httpClient.get<Blob>('/api/file/download/' + filePath, httpOptions);
   }
 
   public upload(uploadFile: UploadFile): Observable<Object> {
